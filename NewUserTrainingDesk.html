@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Changing Homelessness HMIS new-user training workspace">
+  <title>HMIS Training Desk | Changing Homelessness</title>
+  <style>
+    :root {
+      --ink: #17312c;
+      --muted: #5c6d69;
+      --canvas: #f3f5f1;
+      --surface: #ffffff;
+      --line: #d4ddd8;
+      --teal: #006c63;
+      --teal-dark: #004f49;
+      --gold: #c88b20;
+      --danger: #a63d33;
+      --focus: #177d72;
+      --shadow: 0 8px 24px rgba(24, 52, 47, 0.07);
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--canvas); font: 15px/1.45 Arial, Helvetica, sans-serif; }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid rgba(23, 125, 114, 0.3); outline-offset: 2px; }
+    .app-header { background: var(--ink); color: #fff; border-bottom: 4px solid var(--gold); }
+    .header-inner { max-width: 1420px; margin: 0 auto; min-height: 88px; padding: 18px 28px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 13px; }
+    .brand-mark { width: 38px; height: 38px; display: grid; place-items: center; color: var(--ink); background: #d8e9df; border-radius: 5px; font-weight: 800; letter-spacing: 0; }
+    .brand h1 { margin: 0; font-size: 20px; letter-spacing: 0; }
+    .brand p { margin: 2px 0 0; color: #c4d4ce; font-size: 13px; }
+    .save-state { color: #d5e3dd; font-size: 13px; white-space: nowrap; }
+    .save-dot { display: inline-block; width: 8px; height: 8px; margin-right: 6px; border-radius: 50%; background: #79c49a; }
+    main { max-width: 1420px; margin: 0 auto; padding: 26px 28px 46px; }
+    .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 22px; }
+    .metric { min-height: 105px; padding: 17px 19px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--shadow); }
+    .metric-label { color: var(--muted); font-size: 13px; }
+    .metric-value { margin-top: 5px; font-size: 33px; font-weight: 700; line-height: 1; }
+    .metric-note { margin-top: 8px; color: var(--muted); font-size: 12px; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(410px, 1.05fr); gap: 22px; align-items: start; }
+    .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--shadow); }
+    .panel-heading { min-height: 66px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); }
+    .panel-heading h2 { margin: 0; font-size: 17px; }
+    .panel-heading p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+    .panel-body { padding: 20px; }
+    .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .field { min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+    label { display: block; margin-bottom: 5px; color: #354943; font-size: 12px; font-weight: 700; }
+    input, select, textarea { width: 100%; color: var(--ink); background: #fff; border: 1px solid #b9c8c1; border-radius: 4px; padding: 9px 10px; }
+    textarea { min-height: 102px; resize: vertical; }
+    input::placeholder, textarea::placeholder { color: #7c8d87; }
+    .compact-input { max-width: 116px; }
+    .paste-area { background: #f8faf8; }
+    .row-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 18px; }
+    .button { min-height: 38px; padding: 8px 13px; color: #fff; background: var(--teal); border: 1px solid var(--teal); border-radius: 4px; font-weight: 700; }
+    .button:hover { background: var(--teal-dark); border-color: var(--teal-dark); }
+    .button.secondary { color: var(--teal-dark); background: #fff; border-color: #97afa6; }
+    .button.secondary:hover { color: #fff; background: var(--teal-dark); border-color: var(--teal-dark); }
+    .button.danger { color: var(--danger); border-color: #d9aaa3; }
+    .button.danger:hover { color: #fff; background: var(--danger); border-color: var(--danger); }
+    .button.small { min-height: 31px; padding: 5px 9px; font-size: 12px; }
+    .section-divider { height: 1px; margin: 22px 0; background: var(--line); }
+    .password-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+    .input-action { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+    .password-field { font-family: Consolas, "Courier New", monospace; letter-spacing: 0.5px; }
+    .checks { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
+    .check { padding: 3px 7px; color: #286345; background: #edf8f0; border: 1px solid #c9e8d2; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .email-preview { margin: 0; min-height: 455px; padding: 18px; overflow: auto; white-space: pre-wrap; color: #263b35; background: #f8faf8; border: 1px solid #cad6d0; border-radius: 4px; font: 14px/1.55 Consolas, "Courier New", monospace; }
+    .preview-actions { display: flex; gap: 9px; align-items: center; }
+    .preview-hint { color: var(--muted); font-size: 12px; }
+    .toast { min-height: 20px; margin-top: 10px; color: var(--teal-dark); font-size: 13px; font-weight: 700; }
+    .log-section { margin-top: 22px; }
+    .report-tools { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; }
+    .report-tools .field { width: 180px; }
+    .table-wrap { overflow-x: auto; border-top: 1px solid var(--line); }
+    table { width: 100%; min-width: 1060px; border-collapse: collapse; font-size: 13px; }
+    th { padding: 11px 12px; color: #45605a; background: #f1f5f2; border-bottom: 1px solid var(--line); text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0; }
+    td { padding: 11px 12px; border-bottom: 1px solid #e4eae6; vertical-align: top; }
+    tr:last-child td { border-bottom: 0; }
+    .empty-row { padding: 30px; color: var(--muted); text-align: center; }
+    .date-pair { color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .record-actions { white-space: nowrap; }
+    .group-row td { padding: 8px 12px; color: var(--teal-dark); background: #e9f1ed; border-bottom: 1px solid #c9d9d1; font-size: 12px; font-weight: 700; }
+    .group-row.archived td { color: #7b5420; background: #fff5df; border-color: #ead4a4; }
+    .footer-note { margin: 15px 2px 0; color: var(--muted); font-size: 12px; }
+    .hidden { display: none !important; }
+    @media (max-width: 980px) { .workspace { grid-template-columns: 1fr; } .email-preview { min-height: 335px; } }
+    @media (max-width: 620px) { .header-inner, main { padding-left: 16px; padding-right: 16px; } .header-inner { align-items: flex-start; flex-direction: column; gap: 9px; } .metrics, .field-grid { grid-template-columns: 1fr; } .field.full { grid-column: auto; } .panel-heading { align-items: flex-start; flex-direction: column; } .preview-actions { width: 100%; } .preview-actions .button { flex: 1; } .password-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">CH</div>
+        <div>
+          <h1>HMIS Training Desk</h1>
+          <p>Changing Homelessness new-user workspace</p>
+        </div>
+      </div>
+      <div class="save-state" id="saveState"><span class="save-dot"></span>Saved in this browser</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="metrics" aria-label="Training totals">
+      <div class="metric"><div class="metric-label">New users this month</div><div class="metric-value" id="monthStarts">0</div><div class="metric-note" id="monthLabel">Starts in the selected calendar month</div></div>
+      <div class="metric"><div class="metric-label">Completed this month</div><div class="metric-value" id="monthCompletions">0</div><div class="metric-note">Based on completion date</div></div>
+      <div class="metric"><div class="metric-label">All saved users</div><div class="metric-value" id="allUsers">0</div><div class="metric-note">Passwords are never stored in the log</div></div>
+    </section>
+
+    <section class="workspace">
+      <div class="panel">
+        <div class="panel-heading"><div><h2>New user</h2><p>Enter a record, then add it to the training log.</p></div><button class="button secondary small hidden" id="cancelEdit" type="button">Cancel edit</button></div>
+        <div class="panel-body">
+          <div class="field full">
+            <label for="pasteSource">Quick paste</label>
+            <textarea class="paste-area" id="pasteSource" placeholder="Paste labeled details or a tab-delimited row here"></textarea>
+            <div class="row-actions"><button class="button secondary small" id="parsePaste" type="button">Use pasted details</button></div>
+          </div>
+          <div class="section-divider"></div>
+          <form id="userForm">
+            <div class="field-grid">
+              <div class="field"><label for="firstName">First name</label><input id="firstName" autocomplete="given-name" required></div>
+              <div class="field"><label for="lastName">Last name</label><input id="lastName" autocomplete="family-name"></div>
+              <div class="field full"><label for="organization">Organization</label><input id="organization" autocomplete="organization"></div>
+              <div class="field full"><label for="email">Email</label><div class="input-action"><input id="email" type="email" autocomplete="email" placeholder="name@example.org" required><button class="button secondary" id="copyAddress" type="button">Copy address</button></div></div>
+              <div class="field"><label for="officePhone">Office phone</label><input id="officePhone" type="tel" autocomplete="tel" required></div>
+              <div class="field"><label for="cellPhone">Cell phone</label><input id="cellPhone" type="tel" autocomplete="tel-national"></div>
+              <div class="field full"><label for="workAddress">Work address</label><textarea id="workAddress" autocomplete="street-address"></textarea></div>
+              <div class="field"><label for="role">Role</label><input id="role"></div>
+              <div class="field"><label for="caseManager">Case manager</label><input id="caseManager"></div>
+              <div class="field full"><label for="supervisor">Supervisor name</label><input id="supervisor"></div>
+              <div class="field"><label for="trainingType">Training type</label><select id="trainingType"><option value="Online HMIS Training">Online HMIS Training</option><option value="New User">New User</option><option value="Read Only User">Read Only User</option><option value="SSVF CM New User">SSVF CM New User</option><option value="Emergency Shelter New User">Emergency Shelter New User</option><option value="STRMU New User">STRMU New User</option><option value="PATH New User">PATH New User</option><option value="Hybrid New User">Hybrid New User</option><option value="Annual Training">Annual Training</option></select></div>
+              <div class="field"><label for="startDate">Training start date</label><input id="startDate" type="date" required></div>
+              <div class="field"><label for="completionDate">Completion date</label><input id="completionDate" type="date"></div>
+            </div>
+            <div class="row-actions"><button class="button" id="saveRecord" type="submit">Add to training log</button><button class="button secondary" id="clearForm" type="button">Clear form</button></div>
+          </form>
+
+          <div class="section-divider"></div>
+          <div class="field"><label for="password">Temporary password</label><div class="password-row"><input class="password-field" id="password" readonly aria-describedby="passwordChecks"><button class="button secondary" id="generatePassword" type="button">New password</button></div><div class="checks" id="passwordChecks"><span class="check">15+ characters</span><span class="check">Uppercase</span><span class="check">Lowercase</span><span class="check">Number</span><span class="check">Symbol</span></div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-heading"><div><h2>Welcome email</h2><p>Click the message or use Copy email to place it on your clipboard.</p></div><div class="preview-actions"><button class="button" id="copyEmail" type="button">Copy email</button></div></div>
+        <div class="panel-body"><pre class="email-preview" id="emailPreview" role="button" tabindex="0" title="Copy email to clipboard"></pre><div class="toast" id="copyStatus" role="status" aria-live="polite"></div></div>
+      </div>
+    </section>
+
+    <section class="panel log-section">
+      <div class="panel-heading"><div><h2>Training log and monthly report</h2><p>Records save automatically in this browser. Choose the month and date basis, then save a local Excel spreadsheet.</p></div><div class="report-tools"><div class="field"><label for="reportMonth">Report month</label><input id="reportMonth" type="month"></div><div class="field"><label for="reportBasis">Use date</label><select id="reportBasis"><option value="completionDate">Completion date</option><option value="startDate">Training start date</option></select></div><button class="button" id="downloadReport" type="button">Save Excel spreadsheet</button><button class="button secondary" id="backupData" type="button">Backup data</button><label class="button secondary" for="restoreData">Restore backup</label><input class="hidden" id="restoreData" type="file" accept="application/json"></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Training dates</th><th>First name</th><th>Last name</th><th>Organization</th><th>Email</th><th>Office phone</th><th>Cell phone</th><th>Work address</th><th>Role</th><th>Case manager</th><th>Supervisor</th><th>Training type</th><th>Actions</th></tr></thead><tbody id="logBody"></tbody></table></div>
+    </section>
+    <p class="footer-note">This static site saves data only in the browser where it is used. Save a local Excel spreadsheet whenever you need a report, and download a backup routinely. A shared online log needs an authenticated data service; GitHub Pages alone cannot safely write records back to the site.</p>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+      const storageKey = "changing-homelessness-hmis-training-log-v1";
+      const fields = ["firstName", "lastName", "organization", "email", "officePhone", "cellPhone", "workAddress", "role", "caseManager", "supervisor", "trainingType", "startDate", "completionDate"];
+      const $ = (id) => document.getElementById(id);
+      let records = loadRecords();
+      let editingId = null;
+
+      function localDate() { return new Date().toISOString().slice(0, 10); }
+      function localMonth() { return localDate().slice(0, 7); }
+      function loadRecords() { try { const saved = JSON.parse(localStorage.getItem(storageKey)); return Array.isArray(saved) ? saved : []; } catch { return []; } }
+      function saveRecords() { localStorage.setItem(storageKey, JSON.stringify(records)); $("saveState").innerHTML = '<span class="save-dot"></span>Saved in this browser'; }
+      function escapeHtml(value) { return String(value || "").replace(/[&<>\"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[char]); }
+      function formatDate(value) { if (!value) return "Not completed"; const [year, month, day] = value.split("-"); return `${month}/${day}/${year}`; }
+      function getFormData() { return Object.fromEntries(fields.map((field) => [field, $(field).value.trim()])); }
+      function setFormData(data) { fields.forEach((field) => { $(field).value = data[field] || (field === "trainingType" ? "Online HMIS Training" : ""); }); }
+
+      function randomIndex(max) {
+        const range = new Uint32Array(1);
+        const limit = Math.floor(0x100000000 / max) * max;
+        do { crypto.getRandomValues(range); } while (range[0] >= limit);
+        return range[0] % max;
+      }
+      function shuffle(items) { for (let index = items.length - 1; index > 0; index -= 1) { const swap = randomIndex(index + 1); [items[index], items[swap]] = [items[swap], items[index]]; } return items; }
+      function passwordContext() {
+        const form = getFormData();
+        const values = [form.firstName, form.lastName, form.organization, form.email.split("@")[0]];
+        return values.map((value) => value.toLowerCase().replace(/[^a-z0-9]/g, "")).filter((value) => value.length >= 3);
+      }
+      function hasSequence(value) {
+        const sequences = ["0123456789", "abcdefghijklmnopqrstuvwxyz", "qwertyuiop", "asdfghjkl", "zxcvbnm"];
+        const lower = value.toLowerCase();
+        if (/(?:19|20)\d{2}/.test(value)) return true;
+        return sequences.some((sequence) => { for (let i = 0; i <= sequence.length - 4; i += 1) { const part = sequence.slice(i, i + 4); if (lower.includes(part) || lower.includes(part.split("").reverse().join(""))) return true; } return false; });
+      }
+      function validPassword(value) {
+        const blocked = ["password", "welcome", "housing", "changing", "homeless", "hmis", "training", "admin", "clienttrack", ...passwordContext()];
+        return value.length >= 15 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /[0-9]/.test(value) && /[!@#$%^&*_-]/.test(value) && !hasSequence(value) && !blocked.some((word) => value.toLowerCase().includes(word));
+      }
+      function generatePassword() {
+        const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+        const lower = "abcdefghijkmnopqrstuvwxyz";
+        const digits = "23456789";
+        const symbols = "!@#$%^&*_-";
+        const all = upper + lower + digits + symbols;
+        let candidate = "";
+        do {
+          const chars = [upper[randomIndex(upper.length)], lower[randomIndex(lower.length)], digits[randomIndex(digits.length)], symbols[randomIndex(symbols.length)]];
+          while (chars.length < 18) chars.push(all[randomIndex(all.length)]);
+          candidate = shuffle(chars).join("");
+        } while (!validPassword(candidate));
+        $("password").value = candidate;
+        updateEmail();
+      }
+
+      function emailText() {
+        const data = getFormData();
+        const firstName = data.firstName || "there";
+        const username = data.email ? data.email.toLowerCase() : "the email you submitted with your HMIS User Agreement (no capital letters)";
+        const password = $("password").value || "[generated temporary password]";
+        return `Hello, ${firstName}\n\nWelcome to Changing Homelessness's HMIS training! You're enrolled in our online HMIS training course.\n\nGetting started:\n\n1. Watch this 1-minute intro video: https://youtu.be/7PAgh7v-gdw\n2. Log in at: https://chiedconnect.net/login/index.php\n3. Username: ${username}\n4. Password: ${password} (you'll set a new one on first login)\n\nThe course: Takes 3-5 hours, at your own pace. After you finish, allow 1-5 business days for us to review and send your ClientTrack login.\n\nNeed live online or in-person training instead? Just let us know and an instructor will reach out - usually within 24 hours.\n\nQuestions anytime, before or after the course: hmis@changinghomelessness.org\n\nThanks, and enjoy the training! You'll get a short survey at the end so we can keep improving it.`;
+      }
+      function updateEmail() { $("emailPreview").textContent = emailText(); }
+      async function copyText(value) {
+        try { await navigator.clipboard.writeText(value); }
+        catch {
+          const helper = document.createElement("textarea"); helper.value = value; helper.style.position = "fixed"; helper.style.opacity = "0"; document.body.appendChild(helper); helper.select(); document.execCommand("copy"); helper.remove();
+        }
+      }
+      async function copyEmail() {
+        if (!validPassword($("password").value)) generatePassword();
+        const content = emailText();
+        await copyText(content);
+        $("copyStatus").textContent = "Email copied to clipboard.";
+        window.setTimeout(() => { $("copyStatus").textContent = ""; }, 2500);
+      }
+      async function copyAddress() {
+        const address = $("email").value.trim().toLowerCase();
+        if (!address) { $("copyStatus").textContent = "Enter an email address first."; return; }
+        await copyText(address); $("copyStatus").textContent = "Email address copied to clipboard.";
+        window.setTimeout(() => { $("copyStatus").textContent = ""; }, 2500);
+      }
+      function followUpText(record) { return `Hello, ${record.firstName || "there"},\n\nIt has been two weeks since you were registered for the Changing Homelessness's HMIS Online New-User Training. We wanted to reach out and let you know we are here to help assist you if you are in need.\n\nPlease don't hesitate to reach out to us at hmis@changinghomelessness.org.\n\nThank you, and have a great rest of your day,`; }
+      async function copyFollowUp(id) {
+        const record = records.find((item) => item.id === id); if (!record) return;
+        await copyText(followUpText(record)); $("copyStatus").textContent = `Follow-up email for ${record.firstName} copied to clipboard.`;
+        window.setTimeout(() => { $("copyStatus").textContent = ""; }, 3000);
+      }
+
+      function reportRecords() { const month = $("reportMonth").value; const basis = $("reportBasis").value; return records.filter((record) => record[basis] && record[basis].startsWith(month)); }
+      function downloadFile(name, contents, type) { const blob = new Blob([contents], { type }); const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = name; link.click(); URL.revokeObjectURL(url); }
+      function downloadBlob(name, blob) { const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = name; link.click(); URL.revokeObjectURL(url); }
+      function xmlValue(value) { return String(value || "").replace(/[&<>\"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&apos;" })[char]); }
+      function excelColumn(index) { let label = ""; let value = index + 1; while (value) { const remainder = (value - 1) % 26; label = String.fromCharCode(65 + remainder) + label; value = Math.floor((value - 1) / 26); } return label; }
+      function xlsxCell(reference, value, style = 0) { return `<c r="${reference}" t="inlineStr"${style ? ` s="${style}"` : ""}><is><t xml:space="preserve">${xmlValue(value)}</t></is></c>`; }
+      function crc32(bytes) { let crc = -1; for (const byte of bytes) { crc ^= byte; for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1)); } return (crc ^ -1) >>> 0; }
+      function makeZip(files) {
+        const encoder = new TextEncoder(); const localParts = []; const centralParts = []; let offset = 0;
+        files.forEach((file) => {
+          const name = encoder.encode(file.name); const data = encoder.encode(file.contents); const checksum = crc32(data);
+          const local = new Uint8Array(30 + name.length + data.length); const localView = new DataView(local.buffer);
+          localView.setUint32(0, 0x04034b50, true); localView.setUint16(4, 20, true); localView.setUint32(14, checksum, true); localView.setUint32(18, data.length, true); localView.setUint32(22, data.length, true); localView.setUint16(26, name.length, true); local.set(name, 30); local.set(data, 30 + name.length); localParts.push(local);
+          const central = new Uint8Array(46 + name.length); const centralView = new DataView(central.buffer);
+          centralView.setUint32(0, 0x02014b50, true); centralView.setUint16(4, 20, true); centralView.setUint16(6, 20, true); centralView.setUint32(16, checksum, true); centralView.setUint32(20, data.length, true); centralView.setUint32(24, data.length, true); centralView.setUint16(28, name.length, true); centralView.setUint32(42, offset, true); central.set(name, 46); centralParts.push(central); offset += local.length;
+        });
+        const centralSize = centralParts.reduce((size, part) => size + part.length, 0); const end = new Uint8Array(22); const endView = new DataView(end.buffer);
+        endView.setUint32(0, 0x06054b50, true); endView.setUint16(8, files.length, true); endView.setUint16(10, files.length, true); endView.setUint32(12, centralSize, true); endView.setUint32(16, offset, true);
+        return new Blob([...localParts, ...centralParts, end], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      }
+      function downloadReport() {
+        const basis = $("reportBasis").value === "completionDate" ? "Completion date" : "Training start date";
+        const report = reportRecords();
+        const header = ["Completion Date", "First Name", "Last Name", "Organization", "Email", "Role", "Case Manager", "Training Type"];
+        const rows = report.map((record) => [record.completionDate, record.firstName, record.lastName, record.organization, record.email, record.role, record.caseManager, record.trainingType]);
+        const widths = header.map((label, column) => Math.min(42, Math.max(12, Math.max(label.length, ...rows.map((row) => String(row[column] || "").length)) + 2)));
+        const endColumn = excelColumn(header.length - 1); const title = "Changing Homelessness HMIS Training Report"; const meta = `Report basis: ${basis} | Report month: ${$("reportMonth").value}`;
+        const sheetRows = [`<row r="1" ht="26" customHeight="1">${xlsxCell("A1", title, 1)}</row>`, `<row r="2">${xlsxCell("A2", meta, 2)}</row>`, `<row r="4" ht="24" customHeight="1">${header.map((label, index) => xlsxCell(`${excelColumn(index)}4`, label, 3)).join("")}</row>`, ...rows.map((row, rowIndex) => `<row r="${rowIndex + 5}">${row.map((value, columnIndex) => xlsxCell(`${excelColumn(columnIndex)}${rowIndex + 5}`, value)).join("")}</row>`), `<row r="${rows.length + 7}">${xlsxCell(`A${rows.length + 7}`, "Total users trained", 4)}${xlsxCell(`B${rows.length + 7}`, report.length, 5)}</row>`];
+        const worksheet = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="4" topLeftCell="A5" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="15"/><cols>${widths.map((width, index) => `<col min="${index + 1}" max="${index + 1}" width="${width}" customWidth="1"/>`).join("")}</cols><sheetData>${sheetRows.join("")}</sheetData><autoFilter ref="A4:${endColumn}${Math.max(4, rows.length + 4)}"/><mergeCells count="2"><mergeCell ref="A1:${endColumn}1"/><mergeCell ref="A2:${endColumn}2"/></mergeCells></worksheet>`;
+        const styles = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><fonts count=\"3\"><font><sz val=\"10\"/><name val=\"Arial\"/></font><font><b/><sz val=\"15\"/><color rgb=\"FF17312C\"/><name val=\"Arial\"/></font><font><b/><sz val=\"10\"/><color rgb=\"FFFFFFFF\"/><name val=\"Arial\"/></font></fonts><fills count=\"4\"><fill><patternFill patternType=\"none\"/></fill><fill><patternFill patternType=\"gray125\"/></fill><fill><patternFill patternType=\"solid\"><fgColor rgb=\"FF006C63\"/><bgColor indexed=\"64\"/></patternFill></fill><fill><patternFill patternType=\"solid\"><fgColor rgb=\"FFE8F0EC\"/><bgColor indexed=\"64\"/></patternFill></fill></fills><borders count=\"2\"><border><left/><right/><top/><bottom/><diagonal/></border><border><left/><right/><top/><bottom style=\"thin\"><color rgb=\"FFD4DDD8\"/></bottom><diagonal/></border></borders><cellStyleXfs count=\"1\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\"/></cellStyleXfs><cellXfs count=\"6\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"1\" applyBorder=\"1\"/><xf numFmtId=\"0\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"1\"/><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\"/><xf numFmtId=\"0\" fontId=\"2\" fillId=\"2\" borderId=\"1\" applyFont=\"1\" applyFill=\"1\" applyBorder=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\" vertical=\"center\" wrapText=\"1\"/></xf><xf numFmtId=\"0\" fontId=\"1\" fillId=\"3\" borderId=\"0\" applyFont=\"1\" applyFill=\"1\"/><xf numFmtId=\"0\" fontId=\"1\" fillId=\"3\" borderId=\"0\" applyFont=\"1\" applyFill=\"1\" applyAlignment=\"1\"><alignment horizontal=\"center\"/></xf></cellXfs></styleSheet>";
+        const files = [
+          { name: "[Content_Types].xml", contents: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\"><Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/><Default Extension=\"xml\" ContentType=\"application/xml\"/><Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/><Override PartName=\"/xl/worksheets/sheet1.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/><Override PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml\"/></Types>" },
+          { name: "_rels/.rels", contents: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"><Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/></Relationships>" },
+          { name: "xl/workbook.xml", contents: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"><sheets><sheet name=\"Training Report\" sheetId=\"1\" r:id=\"rId1\"/></sheets></workbook>" },
+          { name: "xl/_rels/workbook.xml.rels", contents: "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\"><Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet1.xml\"/><Relationship Id=\"rId2\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/></Relationships>" },
+          { name: "xl/worksheets/sheet1.xml", contents: worksheet },
+          { name: "xl/styles.xml", contents: styles }
+        ];
+        downloadBlob(`HMIS-training-report-${$("reportMonth").value}.xlsx`, makeZip(files));
+      }
+      function backupData() { downloadFile(`HMIS-training-backup-${localDate()}.json`, JSON.stringify(records, null, 2), "application/json"); }
+      function restoreBackup(event) {
+        const file = event.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => { try { const incoming = JSON.parse(reader.result); if (!Array.isArray(incoming)) throw new Error("Invalid backup"); records = incoming; saveRecords(); render(); $("copyStatus").textContent = "Backup restored."; } catch { alert("That file is not a valid HMIS Training Desk backup."); } finally { event.target.value = ""; } };
+        reader.readAsText(file);
+      }
+      function maybeDownloadMonthlyReport() {
+        const today = new Date();
+        if (today.getDate() !== 1) return;
+        const previous = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        const month = `${previous.getFullYear()}-${String(previous.getMonth() + 1).padStart(2, "0")}`;
+        const marker = `changing-homelessness-hmis-monthly-report-${month}`;
+        if (localStorage.getItem(marker)) return;
+        $("reportMonth").value = month; render(); downloadReport(); localStorage.setItem(marker, "downloaded");
+        $("copyStatus").textContent = `Monthly report for ${month} downloaded.`;
+      }
+
+      function render() {
+        const selectedMonth = $("reportMonth").value;
+        const starts = records.filter((record) => record.startDate && record.startDate.startsWith(selectedMonth)).length;
+        const completions = records.filter((record) => record.completionDate && record.completionDate.startsWith(selectedMonth)).length;
+        $("monthStarts").textContent = starts; $("monthCompletions").textContent = completions; $("allUsers").textContent = records.length;
+        $("monthLabel").textContent = `Starts in ${selectedMonth || "the selected month"}`;
+        const body = $("logBody");
+        if (!records.length) { body.innerHTML = '<tr><td class="empty-row" colspan="13">No training records saved yet.</td></tr>'; return; }
+        const isArchived = (record) => { if (record.completionDate || !record.startDate) return false; const start = new Date(`${record.startDate}T00:00:00`); return (Date.now() - start.getTime()) / 86400000 > 14; };
+        const sortByStart = (a, b) => (b.startDate || "").localeCompare(a.startDate || "");
+        const active = records.filter((record) => !record.completionDate && !isArchived(record)).sort(sortByStart);
+        const completed = records.filter((record) => record.completionDate).sort((a, b) => (b.completionDate || b.startDate || "").localeCompare(a.completionDate || a.startDate || ""));
+        const archived = records.filter(isArchived).sort(sortByStart);
+        const recordRow = (record, overdue = false) => `<tr><td><div class="date-pair">Started: ${escapeHtml(formatDate(record.startDate))}<br>Completed: ${escapeHtml(formatDate(record.completionDate))}</div></td><td>${escapeHtml(record.firstName)}</td><td>${escapeHtml(record.lastName)}</td><td>${escapeHtml(record.organization)}</td><td>${escapeHtml(record.email)}</td><td>${escapeHtml(record.officePhone)}</td><td>${escapeHtml(record.cellPhone)}</td><td>${escapeHtml(record.workAddress)}</td><td>${escapeHtml(record.role)}</td><td>${escapeHtml(record.caseManager)}</td><td>${escapeHtml(record.supervisor)}</td><td>${escapeHtml(record.trainingType)}</td><td class="record-actions">${overdue ? `<button class="button secondary small" type="button" data-followup="${record.id}">Copy follow-up</button> ` : ""}<button class="button secondary small" type="button" data-edit="${record.id}">Edit</button> <button class="button secondary danger small" type="button" data-delete="${record.id}">Delete</button></td></tr>`;
+        const group = (label, items, archivedGroup = false) => items.length ? `<tr class="group-row${archivedGroup ? " archived" : ""}"><td colspan="13">${label} (${items.length})</td></tr>${items.map((record) => recordRow(record, archivedGroup)).join("")}` : "";
+        body.innerHTML = group("Active incomplete training", active) + group("Completed training", completed) + group("Archived incomplete training", archived, true);
+      }
+      function resetForm() { editingId = null; $("userForm").reset(); $("startDate").value = localDate(); $("trainingType").value = "Online HMIS Training"; $("pasteSource").value = ""; $("saveRecord").textContent = "Add to training log"; $("cancelEdit").classList.add("hidden"); generatePassword(); }
+      function editRecord(id) { const record = records.find((item) => item.id === id); if (!record) return; editingId = id; setFormData(record); $("saveRecord").textContent = "Update training log"; $("cancelEdit").classList.remove("hidden"); updateEmail(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+      function deleteRecord(id) { const record = records.find((item) => item.id === id); if (!record || !confirm(`Delete the record for ${record.firstName} ${record.lastName}?`)) return; records = records.filter((item) => item.id !== id); saveRecords(); render(); if (editingId === id) resetForm(); }
+      function parsePaste() {
+        const text = $("pasteSource").value.trim(); if (!text) return;
+        const normalizedText = text.replace(/\\@/g, "@").replace(/<br\s*\/?>/gi, "\n").replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
+        const tableText = text.replace(/\\@/g, "@").replace(/<br\s*\/?>/gi, " | ").replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
+        const lines = normalizedText.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+        const data = {};
+        const aliases = { "first name": "firstName", firstname: "firstName", "last name": "lastName", lastname: "lastName", organization: "organization", agency: "organization", email: "email", "e-mail": "email", "office phone": "officePhone", "work phone": "officePhone", "cell phone": "cellPhone", "mobile phone": "cellPhone", "mobile number": "cellPhone", "work location address": "workAddress", "work address": "workAddress", address: "workAddress", role: "role", "job title": "role", "case manager": "caseManager", casemanager: "caseManager", "are you a case manager?": "caseManager", "are you a case manager": "caseManager", "name of supervisor": "supervisor", supervisor: "supervisor", "training type": "trainingType", "start date": "startDate", "completion date": "completionDate", name: "name", "full name": "name" };
+        const cleanCell = (value) => value.trim().replace(/^\|/, "").replace(/\|$/, "").replace(/\*\*/g, "").replace(/<[^>]+>/g, "").trim();
+        const cells = tableText.split(/\r?\n/).flatMap((line) => {
+          const cleaned = cleanCell(line);
+          if (!cleaned || /^[-:|\s]+$/.test(cleaned)) return [];
+          return line.includes("|") ? line.split("|").slice(1, -1).map(cleanCell).filter(Boolean) : [cleaned];
+        });
+        const setName = (value) => { const parts = value.trim().split(/\s+/); if (parts.length) data.firstName = parts.shift(); const lastNameParts = parts.filter((part) => !/^[A-Za-z]\.?$/.test(part)); if (lastNameParts.length) data.lastName = lastNameParts.join(" "); };
+        const headerLine = lines.findIndex((line) => line.includes("\t") && /first\s*name|email/i.test(line));
+        if (headerLine >= 0 && lines[headerLine + 1]) {
+          const headers = lines[headerLine].split("\t").map((item) => item.trim().toLowerCase());
+          const values = lines[headerLine + 1].split("\t").map((item) => item.trim());
+          headers.forEach((header, index) => { if (aliases[header] === "name") setName(values[index] || ""); else if (aliases[header]) data[aliases[header]] = values[index] || ""; });
+        }
+        lines.forEach((line) => {
+          const match = line.match(/^\s*([^:]+):\s*(.+)$/);
+          if (match && aliases[match[1].trim().toLowerCase()] === "name") setName(match[2]);
+          else if (match && aliases[match[1].trim().toLowerCase()]) data[aliases[match[1].trim().toLowerCase()]] = match[2].trim();
+          if (!data.email) { const email = line.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i); if (email) data.email = email[0]; }
+        });
+        cells.forEach((label, index) => { const field = aliases[label.toLowerCase()]; const value = cells[index + 1]; if (!field || !value) return; if (field === "name") setName(value); else if (field === "workAddress") { const nextLabel = cells.slice(index + 1).findIndex((item) => aliases[item.toLowerCase()]); const addressParts = cells.slice(index + 1, nextLabel < 0 ? undefined : index + 1 + nextLabel).filter((item) => !/^(map it|contact information|user information)$/i.test(item)); data.workAddress = addressParts.join(", "); } else data[field] = value; });
+        Object.entries(data).forEach(([field, value]) => { if ($(field) && value) $(field).value = value; });
+        updateEmail();
+      }
+
+      $("userForm").addEventListener("submit", (event) => {
+        event.preventDefault(); const data = getFormData();
+        if (!data.firstName || !data.email || !data.officePhone || !data.startDate) return;
+        const wasEditing = Boolean(editingId);
+        if (wasEditing) { records = records.map((record) => record.id === editingId ? { ...record, ...data, updatedAt: new Date().toISOString() } : record); }
+        else { records.push({ id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`, ...data, createdAt: new Date().toISOString() }); }
+        saveRecords(); render(); resetForm(); $("copyStatus").textContent = wasEditing ? "Record updated." : "Training record saved.";
+      });
+      fields.forEach((field) => $(field).addEventListener("input", updateEmail));
+      $("generatePassword").addEventListener("click", generatePassword);
+      $("copyEmail").addEventListener("click", copyEmail);
+      $("copyAddress").addEventListener("click", copyAddress);
+      $("emailPreview").addEventListener("click", copyEmail);
+      $("emailPreview").addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); copyEmail(); } });
+      $("parsePaste").addEventListener("click", parsePaste);
+      $("clearForm").addEventListener("click", resetForm);
+      $("cancelEdit").addEventListener("click", resetForm);
+      $("downloadReport").addEventListener("click", downloadReport);
+      $("backupData").addEventListener("click", backupData);
+      $("restoreData").addEventListener("change", restoreBackup);
+      $("reportMonth").addEventListener("input", render);
+      $("reportBasis").addEventListener("change", render);
+      $("logBody").addEventListener("click", (event) => { const id = event.target.dataset.edit || event.target.dataset.delete || event.target.dataset.followup; if (!id) return; if (event.target.dataset.edit) editRecord(id); else if (event.target.dataset.followup) copyFollowUp(id); else deleteRecord(id); });
+      $("reportMonth").value = localMonth();
+      $("startDate").value = localDate();
+      generatePassword();
+      render();
+      maybeDownloadMonthlyReport();
+    })();
+  </script>
+</body>
+</html>
